@@ -1,0 +1,17 @@
+Your Project will be explained during the lecture, you can find your data here:
+
+https://drive.google.com/drive/folders/1YMwwPoekwJrw_-UYkZYUkTFqC8bqAy0F?usp=sharing
+
+_________________________________________________
+
+Assignment
+
+A) Extract 1 million of packets from the available data, replicate the statistical analysis observed during lecture 2 and trying to implement one additional evaluation (e.g. graph topology)
+
+B) Using the same dataset, you can cut the time interval as you want trying to replicate or Supervised methodology or Unsupervised methodology(). Summarizing results according to the accuracy and other metrics related to the label considered.
+
+**You can both replicate DSCP analysis or change the label for example classify TCP and UDP. You have complete freedom about the label and the algorithm for classification
+
+
+*Deadline: By July*
+
