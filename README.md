@@ -18,7 +18,7 @@ At the end will be assigned the final project, you will work in group based on t
 
 **Project**: The project can be divided into 2 main parts:
 
-1) Statistical analysis: you will receive a trace from https://mawi.wide.ad.jp/mawi/ , we ask you to replicate the analysis observed during the lecture and maybe add something new
+1) Statistical analysis: you will receive a trace from https://mawi.wide.ad.jp/mawi/ , we ask you to replicate the analysis observed during the lecture and maybe add something new (e.g. possible graph representation)
 
 2) ML problem: you will receive a pickle trace (600k packets) and you will choose to replicate or (a) or (b) from *Lecture 3* 
 
