@@ -19,14 +19,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import Counter
 import copy
-
+import sys
+import shutil
+import os
 
 
 file_name = glob.glob("./*.pcap")[0]
+print("Working with: ", file_name)
 pcap = pyshark.FileCapture(file_name)
 
 
-async def extract_Info_pckt(file_name ): #lista_packet_ICMP
+def extract_Info_pckt(file_name ): #lista_packet_ICMP
     
     pcap = pyshark.FileCapture(file_name)
 
@@ -104,7 +107,7 @@ async def extract_Info_pckt(file_name ): #lista_packet_ICMP
                 values.append(packet.tcp.dstport)            
                 
             else:
-                #Protocol as IP and ICMP e Ws.Short avranno come porta -1
+                #Protocol as IP and ICMP e Ws.Short Port in src and dst will be set to -1
                 values.append(-1)
                 values.append(-1)
                 
@@ -151,6 +154,9 @@ dataFrame = pd.read_pickle("PacketDataframe.pkl")
 
 print(dataFrame.head())
 
+#Stop running from command Line
+#sys.exit("Error message")
+
 # =============================================================================
 # #Bult-in function for the pandas dataframe 
 # =============================================================================
@@ -181,6 +187,19 @@ plt.rcParams['ytick.labelsize'] = label_size
 
 #_______________________________________________________________________________#
 
+folder_image = "Image"
+
+#Remove directory already created
+#shutil.rmtree(folder_image) 
+
+try:
+    os.mkdir(folder_image)
+#If you have already created it Error
+except OSError:
+    print("Creation of the directory %s failed" % folder_image)
+else:
+    print("Successfully created the directory %s" % folder_image)
+folder_image = "./Image/"
 # =============================================================================
 # #Histogram for packet length
 # =============================================================================
@@ -192,7 +211,7 @@ plt.hist(dataFrame["length"],bins= 20,label ="Byte")
 plt.xlabel("Byte",fontsize = 15)
 plt.ylabel("Frequency",fontsize = 15)
 #plt.xticks(fontsize=13)
-plt.savefig("hist.png")
+plt.savefig(folder_image+"hist.png")
 plt.show()
 
 
@@ -266,7 +285,7 @@ for i, (key, ax) in enumerate(targets):
     #ax.set_yscale('log')
 ax.legend()
 fig.suptitle('TOP 6 IP Dst for 192.168.43.28', fontsize=16)
-plt.savefig("TOP 6 IP Dst for MyIP")
+plt.savefig(folder_image + "TOP 6 IP Dst for MyIP")
 plt.show()
 
 # =============================================================================
@@ -283,7 +302,7 @@ plt.ylabel('IP address', fontsize = 18, labelpad = 5)
 plt.xlabel('Total volume of received data ($Kbit$)', fontsize = 20, labelpad = 15)
 plt.xticks(fontsize = 14)
 plt.yticks(fontsize = 14)
-plt.savefig("TOP Destination")
+plt.savefig(folder_image +"TOP Destination")
 plt.show()
 
 # =============================================================================
@@ -301,7 +320,7 @@ plt.ylabel('IP address', fontsize = 18, labelpad = 5)
 plt.xlabel('Total volume of sending data ($Kbit$)', fontsize = 20, labelpad = 15)
 plt.xticks(fontsize = 14)
 plt.yticks(fontsize = 14)
-plt.savefig("TOP Sender")
+plt.savefig(folder_image +"TOP Sender")
 plt.show()
 
 ###############################################################################
@@ -326,7 +345,7 @@ plt.title('Total bitrate', fontsize = 30, pad = 15)
 plt.xticks(fontsize = 14)
 plt.yticks(fontsize = 14)
 plt.legend(fontsize=20,loc="best")
-plt.savefig("BitRate different Averages")
+plt.savefig(folder_image +"BitRate different Averages")
 plt.show()
 
 
@@ -396,7 +415,7 @@ for i in range(len(src_geo)):
   folium.PolyLine([(src_geo.loc[i][0], src_geo.loc[i][1]), (dst_geo.loc[i][0], dst_geo.loc[i][1])], 
                   color="blue", weight=1.5, opacity=1).add_to(flow_map)
 
-flow_map.save(".map_top_5_flows.html")
+flow_map.save(folder_image +"Map_top_5_flows.html")
 #display(flow_map)
 
 
@@ -418,7 +437,7 @@ plt.xlabel('Frequency', fontsize = 20, labelpad = 15)
 plt.ylabel('Protocol', fontsize = 20, labelpad = 15)
 plt.xticks(fontsize = 14)
 plt.yticks(fontsize = 14)
-plt.savefig("Protocol Analysis")
+plt.savefig(folder_image +"Protocol Analysis")
 plt.show()
 
 
@@ -474,7 +493,7 @@ plt.yscale('log')
 plt.title('Ports with more than 50 occurrences', fontsize = 30, pad = 15)
 plt.xlabel('Port number', fontsize = 20, labelpad = 15)
 plt.ylabel('Count', fontsize = 20, labelpad = 15)
-plt.savefig("Port Scanner")
+plt.savefig(folder_image +"Port Scanner")
 plt.show()
 
 
@@ -560,7 +579,7 @@ df_ = df[df["IntArrTime"] < 0.01]
 ax = sns.boxplot(x="Protocol", y="IntArrTime", data=df_)
 ax.set_xlabel("")
 ax.set_ylabel("Inter Arrival Time (sec)",fontsize=16)
-plt.savefig("BoxPlot InterArrivalTime")
+plt.savefig(folder_image +"BoxPlot InterArrivalTime")
 plt.show()
 
 
