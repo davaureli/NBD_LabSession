@@ -7,7 +7,7 @@ This course is composed by three main parts:
 
 2) pcap reading:
 
-   2.a) Reading a pcap file by python, extracting info and splitting it.
+   2.a) Reading a pcap file by python, extracting info and splitting it. Reading part ca be divided into sequential or parallel.
    
    2.b) Create the Dataframe from a starting pcap, analyzing different statistics from flow-based to Geographical referentiation IP addresses
 
