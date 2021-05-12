@@ -28,4 +28,6 @@ At the end will be assigned the final project, you will work in group based on t
 
 **Deadline**:By July
 
+**Group composition**: Please, fill the Excel file at this link https://drive.google.com/drive/folders/1YMwwPoekwJrw_-UYkZYUkTFqC8bqAy0F
+
   
