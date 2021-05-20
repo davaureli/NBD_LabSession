@@ -43,7 +43,7 @@ from kneed import KneeLocator
 # pip install kneed --> for KneeLocator
 
 
-#Read all pickle file saved (On the GitHub repository is available just 1 pkl file,
+#Read all pickle file saved (On the GitHub repository is available just 2 pkl files zipped,
 #in this part we are concatenating multiple dataframe)
 splitting_file = list(sorted(glob.glob('SmallFile*')))
 print("Available files: ",splitting_file)
