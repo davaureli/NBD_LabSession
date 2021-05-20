@@ -38,6 +38,11 @@ from sklearn.cluster import KMeans
 from kneed import KneeLocator
 
 
+#Requirements:
+# conda install -c conda-forge imbalanced-learn --> for SMOTE
+# pip install kneed --> for KneeLocator
+
+
 #Read all pickle file saved
 splitting_file = list(sorted(glob.glob('PiccoloFile*')))
 print("Available files: ",splitting_file)
@@ -205,9 +210,13 @@ for k,val in dict_rows.items():
 col = ["Label"]
 col.extend(["X"+str(i)for i in range(40)])
 df_ = pd.DataFrame.from_records(data_pandas,columns=col )
+#Select just items with a string label and not numeric
+df_ = df_[df_["Label"].isin(['AF','BE', 'CS6','EF','NotKnown'])]
 #Useful to encode the label, it will be exploited at the end of the classification
 le = preprocessing.LabelEncoder()
 df_["Label"]  = le.fit_transform(df_["Label"])
+
+
 
 #Extract X,Y
 X = df_.iloc[:,1:]
@@ -227,13 +236,22 @@ clf.fit(x_train, y_train)
 y_pred = clf.predict(x_test)
 print(clf.score(x_test, y_test))
 
+#Analysis on the prediction --> UNBALANCED Prediction
+#*Paradox of Accuracy*
+print("Our Prediction: ", Counter(y_pred))
+print("Our Prediction based on the DSCP label: ", Counter(le.inverse_transform(y_pred)))
+print("This is really UNBALANCED, even if we have obtained a good accuracy. It is better to observe the Confusion Matrix")
+
+
 #________________________________________
 
 clf = make_pipeline(SVC(gamma='auto',class_weight='balanced'))
 clf.fit(x_train, y_train)
 y_pred = clf.predict(x_test)
-print(clf.score(x_test, y_test))
 
+print(clf.score(x_test, y_test))
+print("Our Prediction based on the DSCP label: ", Counter(le.inverse_transform(y_pred)))
+print("Lower accuracy result, but we start to detect some elements of the other classes")
 
 # =============================================================================
 #  Oversampling 
@@ -263,6 +281,8 @@ clf.fit(X_over, Y_over)
 y_pred = clf.predict(x_test)
 print(clf.score(x_test, y_test))
 
+print("Our Prediction based on the DSCP label: ", Counter(le.inverse_transform(y_pred)))
+print("Let's observe the confusion matrix ...")
 
 # =============================================================================
 # # CONFUSION MATRIX
@@ -338,10 +358,27 @@ print()
 
 y_true, y_pred = y_test, clf.predict(x_test)
 
-print(classification_report(y_true, y_pred))
+print("Label transforation: ",set(y_test), le.inverse_transform(list(set(y_test))))
+#print(classification_report(y_true, y_pred))
 print()
+#Complete Report based on the classification
+print(classification_report(le.inverse_transform(y_true), le.inverse_transform(y_pred)))
 
 
+## Precision = TP/(TP + FP)
+## Recall = TP/(TP + FN) --> Sensitivity to predict a specific class
+
+
+#Final Confusion Matrix after Grid Search
+labels = [ "BE", "NotKnown","AF", "EF","CS6"]
+confmatrix = confusion_matrix(le.inverse_transform(y_test), le.inverse_transform(y_pred),
+                 labels=labels)
+
+df_confusion = pd.DataFrame(confmatrix, index=labels, columns=labels)
+#Normalizing the matrix
+df_conf_norm = df_confusion.div(df_confusion.sum(axis=1),axis=0)
+
+plot_confusion_matrix(df_conf_norm)
 
 ###############################################################################
 ###############################################################################
@@ -359,6 +396,51 @@ print()
 #Here we do not go deeper as in the previous example, but in the Project it will be required
 #for those of you that decide to work with this methodology.
 
+#Reading data
+dict_rows = pd.read_pickle("dictAnalysis.pkl")
+
+
+### Add other flows with priority ####
+for i in range(2,4):
+    dict_ = pd.read_pickle("./dictAnalysis"+str(i)+".pkl")
+
+    keys_ = list(set(dict_.keys())-set(dict_rows.keys()))
+    for k in keys_:
+        dict_rows[k] = dict_[k]
+
+
+#Fast check about DSCP Occurrences
+check = []
+for k,val in dict_rows.items():
+    check.append(val[0])
+
+print("DSCP Check:\t", Counter(check).items())   
+
+
+
+#Create a dataframe extendind the data about packet length and number
+
+data_pandas = []        
+for k,val in dict_rows.items():
+    obs = []
+    obs.append(val[0])
+    obs.extend(val[1].tolist())
+    obs.extend(val[2].tolist())
+    data_pandas.append(obs)
+
+#Columns 
+col = ["Label"]
+col.extend(["X"+str(i)for i in range(40)])
+df_ = pd.DataFrame.from_records(data_pandas,columns=col )
+#Select just items with a string label and not numeric
+df_ = df_[df_["Label"].isin(['AF','BE', 'CS6','EF','NotKnown'])]
+#Useful to encode the label, it will be exploited at the end of the classification
+le = preprocessing.LabelEncoder()
+df_["Label"]  = le.fit_transform(df_["Label"])
+
+#Extract X,Y
+X = df_.iloc[:,1:]
+Y = df_.iloc[:,0]
 
 #Step:
 #1)Extract train and test from our starting dataset
@@ -373,6 +455,16 @@ oversample = SMOTE(sampling_strategy={0:sum(y_train==1),
                                       3:sum(y_train==1)})
 X_over, Y_over = oversample.fit_resample(x_train, y_train)
 
+print()
+print("Starting y_train distribution: ", Counter(y_train))
+print("Distribution of the labels after oversampling: ", Counter(le.inverse_transform(y_train)))
+
+print()
+
+print("Distribution of the labels after oversampling: ", Counter(Y_over))
+print("Distribution of the labels after oversampling: ", Counter(le.inverse_transform(Y_over)))
+print()
+
 kmeans_kwargs = {
     "init": "random",
     "n_init": 10,
@@ -381,7 +473,7 @@ kmeans_kwargs = {
 }
 
 # =============================================================================
-# # A list holds the SSE values for each k
+# # A list holds the SSE (sum of squared errors) values for each k
 # =============================================================================
 sse = []
 for k in range(1, 15):
