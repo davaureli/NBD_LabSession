@@ -32,6 +32,6 @@ At the end will be assigned the final project, you will work in group based on t
 
 **<IMPORTANT!!!>**
 
-**Submission Guidlines:** You have to send an email to me and Professor Cianfrani, attaching the presentation for your oral exam and your code in .py (or if you prefer .ipynb); at least 3 days before the oral exam. The date of the oral exam will then be confirmed by the Professor Cianfrani.
+**Submission Guidelines:** You have to send an email to me and Professor Cianfrani, attaching the presentation for your oral exam and your code in .py (or if you prefer .ipynb); at least 3 days before the oral exam. The date of the oral exam will then be confirmed by the Professor Cianfrani.
 
   
