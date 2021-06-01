@@ -30,4 +30,6 @@ At the end will be assigned the final project, you will work in group based on t
 
 **Group composition**: Please, fill the Excel file at this link https://drive.google.com/drive/folders/1YMwwPoekwJrw_-UYkZYUkTFqC8bqAy0F
 
+**Submission Guidlines:** You have to send an email to me and Professor Cianfrani, attaching the presentation for your oral exam and your code in .py (or if you prefer .ipynb); at least 3 days before the oral exam. The date of the oral exam will then be confirmed by the Professor Cianfrani.
+
   
