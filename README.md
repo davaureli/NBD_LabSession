@@ -1,5 +1,5 @@
-# NBD_LabSession_20/21
-In this repository you will find all lectures and scripts related to the NBD Course of 20/21
+# NBD_LabSession_21/22
+In this repository you will find all lectures and scripts related to the NBD Course of 21/22
 
 This course is composed by three main parts:
 
@@ -28,7 +28,7 @@ At the end will be assigned the final project, you will work in group based on t
 
 **Deadline**:By July
 
-**Group composition**: Please, fill the Excel file at this link https://drive.google.com/drive/folders/1YMwwPoekwJrw_-UYkZYUkTFqC8bqAy0F
+**Group composition**: Please, fill the Excel file at this link https://docs.google.com/spreadsheets/d/1j_uFCVRob_ztTos5q0N1r_YiOEXGARsB/edit#gid=310448381
 
 **<IMPORTANT!!!>**
 
