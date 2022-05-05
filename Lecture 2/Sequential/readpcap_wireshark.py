@@ -28,6 +28,7 @@ file_name = glob.glob("./*.pcap")[0]
 print("Working with: ", file_name)
 pcap = pyshark.FileCapture(file_name)
 
+#Comment here once created dataset
 
 def extract_Info_pckt(file_name ): #lista_packet_ICMP
     
@@ -57,7 +58,7 @@ def extract_Info_pckt(file_name ): #lista_packet_ICMP
         values = []
         
         #print(packet.layers)
-        #We extract onòy the packets from IP Level and only Version IPv4
+        #We extract only the packets from IP Level and only Version IPv4
         #if 'IP' in packet and packet.eth.src == sorgente:
         if 'IP' in packet :
             
@@ -128,7 +129,7 @@ def extract_Info_pckt(file_name ): #lista_packet_ICMP
     print("Now we have finished the analysis so we closed the file: " + file_name)     
     pcap.close()
    
-    print(len(total_info))
+    print("Total number of packets: ",str(len(total_info)))
     #Creation of the data frame
     dataFrame = pd.DataFrame(total_info[1:],columns = total_info[0])
     
@@ -148,10 +149,17 @@ def extract_Info_pckt(file_name ): #lista_packet_ICMP
 dataFrame = extract_Info_pckt(file_name)
 print("Finish the reading part")
 
+#Save the dataframe in a pickle format, in this way once we saved it we can just reload without losing time
 dataFrame.to_pickle("PacketDataframe.pkl")
 
+sys.exit("Error message - Data created")
+
+#Comment here once created dataset
+
+#Reload dataframe
 dataFrame = pd.read_pickle("PacketDataframe.pkl")
 
+print("Dataframe overview: \n")
 print(dataFrame.head())
 
 #Stop running from command Line
@@ -161,10 +169,12 @@ print(dataFrame.head())
 # #Bult-in function for the pandas dataframe 
 # =============================================================================
 
+print("Packet Length Statistics")
 print()
 print(dataFrame['length'].describe())
 print()
 
+print("Time To Live Statistics")
 print()
 print(dataFrame['ttl'].describe())
 print()
@@ -200,6 +210,7 @@ except OSError:
 else:
     print("Successfully created the directory %s" % folder_image)
 folder_image = "./Image/"
+
 # =============================================================================
 # #Histogram for packet length
 # =============================================================================
@@ -208,21 +219,28 @@ plt.figure(figsize = (20, 10))
 plt.hist(dataFrame["length"],bins= 20,label ="Byte")
 #plt.xscale('log')
 #plt.legend()
-plt.xlabel("Byte",fontsize = 15)
+plt.xlabel("Packet Length (Byte)",fontsize = 15)
 plt.ylabel("Frequency",fontsize = 15)
 #plt.xticks(fontsize=13)
 plt.savefig(folder_image+"hist.png")
 plt.show()
 
 
-
+#Aggregate information based on the couple UP_SRC and IP_DST --> comulative packet length exchanged 
 data_couple = dataFrame.groupby(["IP_SRC", "IP_DST"])[['length']].agg('sum')
 
+#Aggregate information based on the couple UP_SRC and IP_DST and Protocol --> comulative packet length exchanged 
 data_couple = dataFrame.groupby(["IP_SRC", "IP_DST","Protocol"])[['length']].agg('sum')
+#print(data_couple)
+
 
 print(data_couple.sort_values(by=['length'], ascending=False).head(20))
 
 
+
+#===============================================================================
+
+#Analysis based on a selection of the starting dataframe based on my IP address
 
 onlyMyIP = dataFrame[dataFrame["IP_SRC"] == "192.168.43.28"]
 data_couple = onlyMyIP.groupby(["IP_DST"])[['length']].agg('sum').sort_values(by=['length'], ascending=False).head(20)
@@ -247,7 +265,7 @@ def bitRate(data, step_sec = 1):
     print(step)
     for i in range(int(step)):
     
-        #From Byte to bit
+        #From Byte to bit - selection of the time interval between the start and the end of a single time slot
         val = np.sum(data[(data["time"]>=start) & (data["time"]<finish)]["length"]*8)
         if not np.isnan(val):
             value.append(val/step_sec)
@@ -288,8 +306,10 @@ fig.suptitle('TOP 6 IP Dst for 192.168.43.28', fontsize=16)
 plt.savefig(folder_image + "TOP 6 IP Dst for MyIP")
 plt.show()
 
+
+
 # =============================================================================
-# # TOP 5 DESTINATION for received data  
+# # TOP 6 DESTINATION for received data  
 # =============================================================================
 
 data_couple = dataFrame.groupby(["IP_DST"])[['length']].agg('sum').sort_values(by=['length'], ascending=False).head(6)
@@ -297,13 +317,15 @@ data_couple = dataFrame.groupby(["IP_DST"])[['length']].agg('sum').sort_values(b
 plt.figure(figsize = (18, 12), dpi = 75)
 #Remove my Ip too traffic generated
 plt.barh(data_couple.index[1:], data_couple['length'][1:]/1e3, color = sns.color_palette('plasma', 10))
-plt.title('Top 10 destinations for received data', fontsize = 30, loc = 'center', pad = 15)
+plt.title('Top 6 destinations for received data', fontsize = 30, loc = 'center', pad = 15)
 plt.ylabel('IP address', fontsize = 18, labelpad = 5)
 plt.xlabel('Total volume of received data ($Kbit$)', fontsize = 20, labelpad = 15)
 plt.xticks(fontsize = 14)
 plt.yticks(fontsize = 14)
 plt.savefig(folder_image +"TOP Destination")
 plt.show()
+
+
 
 # =============================================================================
 # # TO 10 DESTINATION for sending data  
@@ -315,7 +337,7 @@ plt.figure(figsize = (18, 12), dpi = 75)
 #plt.barh(data_couple.index[1:], data_couple['length'][1:]/1e3, color = sns.color_palette('plasma', 10))
 plt.barh(data_couple.index, data_couple['length']/1e3, color = sns.color_palette('plasma', 10))
 
-plt.title('Top 10 destinations for sending data', fontsize = 30, loc = 'center', pad = 15)
+plt.title('Top 6 destinations for sending data', fontsize = 30, loc = 'center', pad = 15)
 plt.ylabel('IP address', fontsize = 18, labelpad = 5)
 plt.xlabel('Total volume of sending data ($Kbit$)', fontsize = 20, labelpad = 15)
 plt.xticks(fontsize = 14)
@@ -323,12 +345,15 @@ plt.yticks(fontsize = 14)
 plt.savefig(folder_image +"TOP Sender")
 plt.show()
 
+
+
 ###############################################################################
 
 # =============================================================================
 # Bit Rate IP: 74.125.99.134 ??? Total Bit Rate ?
 # =============================================================================
 
+#Variation of a bit rate considering different time intervals
 
 plt.figure(figsize = (20, 10))
 
@@ -347,6 +372,7 @@ plt.yticks(fontsize = 14)
 plt.legend(fontsize=20,loc="best")
 plt.savefig(folder_image +"BitRate different Averages")
 plt.show()
+
 
 
 ##############################################################################
@@ -397,13 +423,16 @@ for i in range(len(mostcommon_srcdst)):
 #Sigle Couple
 src_geo, dst_geo = geo_infos(['185.86.84.30'],['46.37.14.27'])
 #5 Couples
-src_geo, dst_geo = geo_infos(list_src, list_dst)
+#src_geo, dst_geo = geo_infos(list_src, list_dst)
 
 src_geo = pd.DataFrame(src_geo, columns=['latitude', 'longitude', 'region'])
 dst_geo = pd.DataFrame(dst_geo, columns=['latitude', 'longitude', 'region'])
 
-
-
+print("Data:  \n")
+print(src_geo)
+print()
+print(dst_geo)
+print("\n")
 
 flow_map = folium.Map([0, 0], zoom_start=2, tiles='Stamen Terrain')
 
@@ -423,9 +452,10 @@ flow_map.save(folder_image +"Map_top_5_flows.html")
                     #Flows analysis#
 ##############################################################################
 
-
+#pandas agg is an alias to aggregate
 grouped_flows = dataFrame.groupby(['IP_SRC', 'IP_DST', 'Protocol', 'src_port', 'dst_port']).agg(tot_len = pd.NamedAgg(column = 'length', aggfunc = 'sum')).reset_index()
 
+print(grouped_flows.head(5))
 grouped_flows["Protocol"] = grouped_flows["Protocol"].replace({1:"ICMP",6:"TCP",17:"UDP"})
 
 #Protocol Frequencies
@@ -439,8 +469,6 @@ plt.xticks(fontsize = 14)
 plt.yticks(fontsize = 14)
 plt.savefig(folder_image +"Protocol Analysis")
 plt.show()
-
-
 
 
 
@@ -462,6 +490,7 @@ def port_scan (x, dic):
                     dic[port] += 1
     return(dic)
 
+#Scanning port analysing pandasDataframe, both for source and destination ports
 source_ports = {}
 source_ports = port_scan(dataFrame["src_port"], source_ports)
 dest_ports = {}
@@ -484,6 +513,13 @@ dports = dports.rename(columns = {'index':'port', 0:'count'})
 sports = sports.sort_values(by = 'count', ascending = False)
 dports = dports.sort_values(by = 'count', ascending = False)
 
+print()
+print("Src Ports: ")
+print(sports)
+print("Dst Ports: ")
+print(dports)
+print()
+
 
 plt.figure(figsize = (19, 10), dpi = 75)
 plt.bar(x = list(map(str, list(sports.loc[sports['count'] > 50,'port']))), color = 'darkred', height = list(sports.loc[sports['count'] > 50,'count']), label = 'Src port', alpha = 0.7)
@@ -492,10 +528,9 @@ plt.legend(fontsize=20)
 plt.yscale('log')
 plt.title('Ports with more than 50 occurrences', fontsize = 30, pad = 15)
 plt.xlabel('Port number', fontsize = 20, labelpad = 15)
-plt.ylabel('Count', fontsize = 20, labelpad = 15)
+plt.ylabel('Count (logscale)', fontsize = 20, labelpad = 15)
 plt.savefig(folder_image +"Port Scanner")
 plt.show()
-
 
 
 #############################################################################
@@ -511,7 +546,7 @@ import seaborn as sns
 
 def InterArrivalTime(data):
     val = np.array(data["time"])
-    
+    #Calculate the n-th discrete difference along the given axis
     return np.diff(val)
 
 data_protocol = copy.deepcopy(dataFrame[dataFrame["Protocol"].isin([6,17])])
@@ -519,7 +554,7 @@ data_protocol["Protocol"] = data_protocol["Protocol"].replace({1:"ICMP",6:"TCP",
 
 print(Counter(data_protocol["Protocol"]))
 
-
+#remove outlier
 data_protocol = data_protocol[data_protocol["length"]<= 6000]
 
 plt.figure(figsize = (20, 10))
@@ -587,3 +622,5 @@ plt.show()
 print("Mean InterArrivalTime TCP Session: %.2f"% np.mean(np.array(inteArr_TCP)[np.array(inteArr_TCP)<1]))
 
 print("Mean InterArrivalTime UDP Session: %.2f"% np.mean(np.array(inteArr_UDP)[np.array(inteArr_UDP)<1]))
+
+sys.exit("Error message finish")
