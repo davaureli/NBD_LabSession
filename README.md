@@ -5,6 +5,14 @@ This course is composed by three main parts:
 
 1) Using Wireshark to sniff packets and observe packet information
 
+*macOS advice: 
+      #Open your prompt
+      sudo vi /etc/paths
+      #Add your Path where Wireshark application is saved. (Following command is my own situation, just check under Applications)
+      /Applications/Wireshark.app/Contents/MacOS/
+      :wq
+      #Close the prompt. Reopen it and check the execution of wireshark or t-shark commands
+
 2) pcap reading:
 
    2.a) Reading a pcap file by python, extracting info and splitting it. Reading part ca be divided into sequential or parallel.
