@@ -5,7 +5,7 @@ This course is composed by three main parts:
 
 1) Using Wireshark to sniff packets and observe packet information
 
-**macOS advice: 
+**macOS advice (command line execution): 
 
       #Open your prompt
       
