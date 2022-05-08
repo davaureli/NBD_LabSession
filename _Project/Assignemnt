@@ -37,14 +37,14 @@ FOLLOW the LIST!
 
 B) Using the same dataset, you can cut the time interval as you want trying to replicate or Supervised or Unsupervised classification problem.
 
-Summarizing results according to the accuracy and other metrics related to the label(**) considered, you can add the more variables w.r.t. 
-the paper analyzed but remember you must work with flow based features.
+Summarizing results according to the accuracy and other metrics related to the label(**) considered, you can add more variables w.r.t. 
+the papers analyzed: but remember you must work with *flow based features*.
 
 
 **You can both replicate DSCP analysis or change the label for example classify TCP and UDP. You have complete freedom about the label and the algorithm for classification
 
 
-*Deadline: By July*
+*Deadline: By September*
 
-At the end of your work you can write an email to Prof. Cianfrani and me and we can settle on a date for the oral presentation.
+At the end of your work you can write an email to Prof. Cianfrani and me, after that we can settle on a date for the oral presentation.
 
