@@ -1,5 +1,5 @@
-# NBD_LabSession_21/22
-In this repository you will find all lectures and scripts related to the NBD Course of 21/22
+# NBD_LabSession_22/23
+In this repository you will find all lectures and scripts related to the NBD Course of 22/23
 
 This course is composed by three main parts:
 
