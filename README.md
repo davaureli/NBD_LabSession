@@ -1,3 +1,5 @@
+Lesson 05/05/2023 Link: https://uniroma1.zoom.us/j/91300369298?pwd=SC9rNDdUMUVJejd3NytiL3NpVlF3UT09
+
 # NBD_LabSession_22/23
 In this repository you will find all lectures and scripts related to the NBD Course of 22/23
 
