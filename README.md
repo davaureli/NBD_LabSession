@@ -1,3 +1,5 @@
+15/05/2023: Last Lesson and Project Assignement (For those who will take the oral exam for the lab, attendance is required!)
+
 Lesson Zoom Link: https://uniroma1.zoom.us/j/6086056923
 
 # NBD_LabSession_22/23
